@@ -19,17 +19,22 @@ export default class PullToRefreshExample extends Component {
   constructor(param) {
     super(param);
     this.state = {
-      cards: [1, 2, 3]
+      cards: [1, 2, 3],
+      isLoading: false
     }
     this._refresh = this._refresh.bind(this);
 
+  }
+  componentWillMount() {
+    this.setState({ isLoading: true });
+    this._refresh();
   }
   _refresh () {
     // you must return Promise everytime
     return new Promise((resolve) => {
       setTimeout(()=>{
         // some refresh process should come here
-        this.setState({cards: this.state.cards.concat([this.state.cards.length + 1])})
+        this.setState({ isLoading: false, cards: this.state.cards.concat([this.state.cards.length + 1]) })
         resolve(); 
       }, 2000)
     })
@@ -41,6 +46,7 @@ export default class PullToRefreshExample extends Component {
           <Text style={styles.headerText}>PullToRefreshView Demo</Text>
         </View>
         <PTRView
+          isLoading={this.state.isLoading}
           style={{backgroundColor:'#F5FCFF'}}
           onRefresh={this._refresh}
         >
